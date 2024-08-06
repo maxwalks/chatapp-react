@@ -1,26 +1,12 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card"
+import Auth from "./Auth";
 
 export default function Login () {
 
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+        <>
+            <div className="mt-20">
+                <Auth link="http://localhost:3001/auth/login" text="Login"/>
+            </div>
+        </>
     );
 }

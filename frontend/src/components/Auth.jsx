@@ -11,12 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 
 export default function Auth (props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('')
     const navigate = useNavigate()
   
     const handleSubmit = async (e) => {
@@ -24,10 +24,23 @@ export default function Auth (props) {
       try {
         const response = await axios.post(`${props.link}`, { username, password });
         console.log(response)
-        if (response.status === 409) {
-          setError("Duplicate Username")
-        }
+        toast.success("Success", {
+            description:"Account successfully created.",
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        })
       } catch (error) {
+        if (error.response.status === 409) {
+          toast.error("Error", {
+            description: "This username already exists.",
+            action: {
+              label: "Close",
+              onClick: () => console.log("Closed"),
+            },
+          });
+        }
         console.error('Error registering:', error);
       }
     };
@@ -36,7 +49,7 @@ export default function Auth (props) {
       <div className="flex justify-center align-center">
         <Card className="w-[500px]">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">Create an account</CardTitle>
+            <CardTitle className="text-2xl">{props.text}</CardTitle>
             <CardDescription>
               Enter your username and password below
             </CardDescription>
@@ -59,7 +72,7 @@ export default function Auth (props) {
           </CardContent>
           <CardFooter>
             <Button className="w-full" onClick={handleSubmit}>
-              Create Account
+              {props.text}
             </Button>
           </CardFooter>
         </Card>

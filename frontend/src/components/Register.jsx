@@ -1,9 +1,13 @@
 import Auth from "./Auth";
+import { Toaster } from "@/components/ui/sonner"
 
 const Register = () => {
   return (
     <>
-        <Auth link="http://localhost:3001/auth/register" authMethod="Register"/>
+        <div className="mt-20">
+            <Auth link="http://localhost:3001/auth/register" text="Create an account"/>
+        </div>
+        <Toaster dark/>
     </>
   );
 };
