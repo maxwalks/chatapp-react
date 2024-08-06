@@ -13,9 +13,12 @@ exports.signup_post = async (req, res, next) => {
     const { username, password } = req.body;
     const lastip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     await User.create({ username, password, lastip });
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(200).json({ message: 'User registered successfully' });
   } catch (error) {
-    next(error);
+    console.log(error)
+    if (error.code === 11000) {
+      res.status(409).json({ message: "Username already exists" })
+    }
   }
 };
 

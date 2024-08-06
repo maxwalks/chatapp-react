@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const { userValidationRules, validate } = require("../../middleware/validator")
 
-router.post('/auth/register', userValidationRules(), validate, authController.signup_post);
+router.post('/auth/register', authController.signup_post);
 router.post('/auth/login', authController.login_post);
 
 module.exports = router;
