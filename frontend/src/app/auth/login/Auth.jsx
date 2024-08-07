@@ -1,6 +1,7 @@
+"use client"
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -13,24 +14,29 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
+axios.defaults.withCredentials = true;
 
-export default function Auth (props) {
+
+export default function Auth () {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate()
+    const router = useRouter()
   
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post(`${props.link}`, { username, password });
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        const response = await axios.post("http://localhost:3001/auth/login", { username, password });
         console.log(response)
         toast.success("Success", {
-            description:"Account successfully created.",
+            description:"Successfully logged in.",
             action: {
                 label: "Close",
                 onClick: () => console.log("Closed")
             }
         })
+        delay(5000)
+        router.push("/maxwalks")
       } catch (error) {
         if (error.response.status === 409) {
           toast.error("Error", {
@@ -40,8 +46,32 @@ export default function Auth (props) {
               onClick: () => console.log("Closed"),
             },
           });
+        } else if (error.response.status === 403) {
+            toast.error("Error", {
+                description: "Incorrect username or password.",
+                action: {
+                  label: "Close",
+                  onClick: () => console.log("Closed"),
+                },
+            });
+        } else if (error.response.status === 404) {
+            toast.error("Error", {
+                description: "User not found.",
+                action: {
+                  label: "Close",
+                  onClick: () => console.log("Closed"),
+                },
+            });
+        } else {
+            toast.error("Uh oh! Something went wrong.", {
+                description: 'There was a problem with your request.',
+                action: {
+                    label: "Try again",
+                    onClick: () => console.log("closed")
+                }
+            });
+            console.error('Error registering:', error);
         }
-        console.error('Error registering:', error);
       }
     };
 
@@ -49,7 +79,7 @@ export default function Auth (props) {
       <div className="flex justify-center align-center">
         <Card className="w-[500px]">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">{props.text}</CardTitle>
+            <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>
               Enter your username and password below
             </CardDescription>
@@ -66,13 +96,14 @@ export default function Auth (props) {
               <Label>Password</Label>
               <Input
                 placeholder="Password"
+                type="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </CardContent>
           <CardFooter>
             <Button className="w-full" onClick={handleSubmit}>
-              {props.text}
+              Login
             </Button>
           </CardFooter>
         </Card>

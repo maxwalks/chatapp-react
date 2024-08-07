@@ -5,9 +5,9 @@ const Register = () => {
   return (
     <>
         <div className="mt-20">
-            <Auth link="http://localhost:3001/auth/register" text="Create an account"/>
+            <Auth />
         </div>
-        <Toaster dark/>
+        <Toaster />
     </>
   );
 };

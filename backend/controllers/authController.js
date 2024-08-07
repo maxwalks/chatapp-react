@@ -27,12 +27,23 @@ exports.login_post = async (req, res, next) => {
   try {
     const user = await User.login(username, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      sameSite: 'Lax', // Adjust according to your needs
+      secure: process.env.NODE_ENV === 'production' // Set to true in production
+    });
     res.status(200).json({ message: 'User logged in successfully' });
   } catch (error) {
-    next(error);
+    if(error.message === "Incorrect password.") {
+      res.status(403).json({ message: "Incorrect password or username." })
+    } else if (error.message === "User not found.") {
+      res.status(404).json({ message: "User not found." })
+    }
   }
 };
+
+
 
 exports.logout_get = (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
