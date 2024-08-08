@@ -36,7 +36,7 @@ export default function Auth () {
             }
         })
         delay(5000)
-        router.push("/maxwalks")
+        router.push("/")
       } catch (error) {
         if (error.response.status === 409) {
           toast.error("Error", {

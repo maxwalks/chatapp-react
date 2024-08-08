@@ -15,16 +15,26 @@ router.post('/auth/login', authController.login_post);
 router.post('/authenticate', async (req, res) => {
     const token = req.cookies.jwt;
     if (token) {
-      jwt.verify(token, "secret", (err, decodedToken) => {
+      jwt.verify(token, "secret", async (err, decodedToken) => {
         if (err) {
           res.status(400).json({ error: err })
         } else {
-          res.status(200).json({ message: "Authentication OK" })
+          const user = await User.findById(decodedToken.id)
+          if (user) {
+            res.status(200).json({ message: "Authentication OK" })
+          } else {
+            res.status(401).json({ message: "Unauthorized" })
+          }
         }
       });
     } else {
       res.status(401).json({ message: "Unauthorized" })
     }
-  });
+});
+
+router.post("/api/getPosts", async (req, res) => {
+  const posts = await Post.find()
+  res.status(200).json(posts)
+})
 
 module.exports = router;
