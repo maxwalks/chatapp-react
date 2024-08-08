@@ -37,4 +37,22 @@ router.post("/api/getPosts", async (req, res) => {
   res.status(200).json(posts)
 })
 
+router.post("/api/sendMessage", async (req, res) => {
+  const headers = req.headers.authorization
+  const { message } = req.body
+  if (!message || message === "") {
+    res.status(400).json({ message: "Empty message" })
+  }
+  if (headers) {
+    jwt.verify(headers, "secret", async (err, decodedToken) => {
+      const user = await User.findById(decodedToken.id)
+      await Post.create({ message : message, author: user.username })
+      const post = await Post.find()
+      res.status(200).json(post)
+    })
+  } else {
+    res.status(401).json({ message: "Unauthorized." })
+  }
+})
+
 module.exports = router;

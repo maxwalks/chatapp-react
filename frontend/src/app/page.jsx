@@ -17,7 +17,7 @@ export default async function HomePage() {
     });
     if (response.status === 200) {
       return (
-        <Chatbox />
+        <Chatbox cookie={token} />
       );
     }
   } catch (error) {
